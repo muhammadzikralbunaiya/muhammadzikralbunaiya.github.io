@@ -405,10 +405,10 @@ textarea {
     position: relative;
 
     width: 100%;
+    height: auto;
 
-    aspect-ratio: 1 / 1;
-
-    object-fit: cover;
+    object-fit: contain;
+    object-position: center top;
 
     border-radius: 20px;
 
