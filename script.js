@@ -293,3 +293,154 @@ window.addEventListener(
 
     }
 );
+
+/* =====================================================
+   LUXURY THEME + INTERACTION
+===================================================== */
+
+const themeToggle = document.getElementById('themeToggle');
+const themeIcon = themeToggle
+    ? themeToggle.querySelector('.theme-icon')
+    : null;
+
+function applyTheme(theme) {
+
+    document.body.classList.toggle(
+        'light',
+        theme === 'light'
+    );
+
+    if (themeIcon) {
+        themeIcon.textContent =
+            theme === 'light'
+                ? '🌙'
+                : '☀️';
+    }
+
+    if (themeToggle) {
+        themeToggle.setAttribute(
+            'aria-label',
+            theme === 'light'
+                ? 'Aktifkan mode gelap'
+                : 'Aktifkan mode terang'
+        );
+
+        themeToggle.setAttribute(
+            'title',
+            theme === 'light'
+                ? 'Ganti ke mode gelap'
+                : 'Ganti ke mode terang'
+        );
+    }
+}
+
+const savedTheme =
+    localStorage.getItem('portfolio-theme');
+
+applyTheme(
+    savedTheme === 'light'
+        ? 'light'
+        : 'dark'
+);
+
+if (themeToggle) {
+
+    themeToggle.addEventListener(
+        'click',
+        () => {
+
+            const nextTheme =
+                document.body.classList.contains('light')
+                    ? 'dark'
+                    : 'light';
+
+            localStorage.setItem(
+                'portfolio-theme',
+                nextTheme
+            );
+
+            applyTheme(nextTheme);
+        }
+    );
+}
+
+
+/* =====================================================
+   MOUSE SPOTLIGHT
+===================================================== */
+
+window.addEventListener(
+    'pointermove',
+    (event) => {
+
+        document.documentElement.style.setProperty(
+            '--mouse-x',
+            `${event.clientX}px`
+        );
+
+        document.documentElement.style.setProperty(
+            '--mouse-y',
+            `${event.clientY}px`
+        );
+
+    },
+    { passive: true }
+);
+
+
+/* =====================================================
+   PREMIUM CARD TILT
+===================================================== */
+
+const tiltCards = document.querySelectorAll(
+    '.project-card, .skill-card, .hobby-card'
+);
+
+tiltCards.forEach(card => {
+
+    card.addEventListener(
+        'pointermove',
+        event => {
+
+            if (window.innerWidth < 900) {
+                return;
+            }
+
+            const rect =
+                card.getBoundingClientRect();
+
+            const x =
+                event.clientX - rect.left;
+
+            const y =
+                event.clientY - rect.top;
+
+            const centerX =
+                rect.width / 2;
+
+            const centerY =
+                rect.height / 2;
+
+            const rotateX =
+                ((y - centerY) / centerY) * -3;
+
+            const rotateY =
+                ((x - centerX) / centerX) * 3;
+
+            card.style.transform =
+                `perspective(800px)
+                 rotateX(${rotateX}deg)
+                 rotateY(${rotateY}deg)
+                 translateY(-5px)`;
+
+        }
+    );
+
+    card.addEventListener(
+        'pointerleave',
+        () => {
+            card.style.transform = '';
+        }
+    );
+
+});
